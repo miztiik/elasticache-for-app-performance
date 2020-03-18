@@ -93,7 +93,7 @@ class ElasticacheForAppPerformanceStack(core.Stack):
         output_2 = core.CfnOutput(self,
                                   "MonitoredS3Bucket",
                                   value=(
-                                      f"https://console.aws.amazon.com/s3/buckets/"
+                                      #   f"https://console.aws.amazon.com/s3/buckets/"
                                       f"{app_data_bkt.bucket_name}"
                                   ),
                                   description=f"S3 Bucket to host application data"

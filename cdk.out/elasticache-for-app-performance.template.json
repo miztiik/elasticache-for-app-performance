@@ -1,6 +1,6 @@
 {
   "Resources": {
-    "webAppClientRoleId17FCC2F6": {
+    "webAppClientRole11E00A99": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -71,7 +71,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "elasticache-for-app-performance/webAppClientRoleId/Resource"
+        "aws:cdk:path": "elasticache-for-app-performance/webAppClientRole/Resource"
       }
     },
     "webAppClientInstanceSecurityGroupFEBFE59B": {
@@ -120,7 +120,7 @@
       "Properties": {
         "Roles": [
           {
-            "Ref": "webAppClientRoleId17FCC2F6"
+            "Ref": "webAppClientRole11E00A99"
           }
         ]
       },
@@ -184,7 +184,7 @@
         }
       },
       "DependsOn": [
-        "webAppClientRoleId17FCC2F6"
+        "webAppClientRole11E00A99"
       ],
       "Metadata": {
         "aws:cdk:path": "elasticache-for-app-performance/webAppClient/Resource"
@@ -381,6 +381,80 @@
         "aws:asset:property": "Content"
       }
     },
+    "ingestDatawebAppClientRoleId352EA09E": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "ec2.",
+                      {
+                        "Ref": "AWS::URLSuffix"
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore"
+              ]
+            ]
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/AmazonS3ReadOnlyAccess"
+              ]
+            ]
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/ingestData/webAppClientRoleId/Resource"
+      }
+    },
     "ingestDataB903D79F": {
       "Type": "AWS::CloudFormation::CustomResource",
       "Properties": {
@@ -482,9 +556,14 @@
         "PolicyDocument": {
           "Statement": [
             {
-              "Action": "ec2:CreateNetworkInterface",
+              "Action": [
+                "ec2:CreateNetworkInterface",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DeleteNetworkInterface"
+              ],
               "Effect": "Allow",
-              "Resource": "*"
+              "Resource": "*",
+              "Sid": "AllowLambdaToManageVPCENI"
             },
             {
               "Action": [
@@ -492,15 +571,20 @@
                 "s3:PutObject"
               ],
               "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "appDataBkt3B1B2198",
-                    "Arn"
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "appDataBkt3B1B2198",
+                        "Arn"
+                      ]
+                    },
+                    "/*"
                   ]
-                },
-                "arn:aws:s3:::*"
-              ],
+                ]
+              },
               "Sid": "AllowS3ObjectReadWriteAccess"
             }
           ],
@@ -521,7 +605,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "def random_str_generator(size=40, chars=string.ascii_uppercase + string.digits):\n    return ''.join(random.choice(chars) for _ in range(size))\n\n\ndef lambda_handler(event, context):\n    import redis\n    import logging as log\n    import cfnresponse\n    import boto3\n    import os\n    import uuid\n    import random\n    log.getLogger().setLevel(log.INFO)\n\n    # This needs to change if there are to be multiple resources in the same stack\n    physical_id = 'TheOnlyCustomResource'\n\n    try:\n        log.info(f'Input event: {event}')\n\n        # Check if this is a Create and we're failing Creates\n        if event['RequestType'] == 'Create' and event['ResourceProperties'].get('FailCreate', False):\n            raise RuntimeError('Create failure requested')\n\n        # Do the thing\n        # OriginalCode\n        message = event['ResourceProperties']['Message']\n\n        # MINE\n        REDIS_HOST = os.environ.get('REDIS_HOST')\n        REDIS_PORT = os.environ.get('REDIS_PORT')\n        BUCKET_NAME = os.environ.get('BUCKET_NAME', 6379)\n        RECORD_COUNT = os.environ.get('RECORD_COUNT', 200)\n\n        if not REDIS_HOST or not BUCKET_NAME:\n            log.info(\n                f'Either REDIS_HOST:{REDIS_HOST} or BUCKET_NAME:{BUCKET_NAME} is none')\n            return cfnresponse.send(event, context, cfnresponse.FAILED, {}, physical_id)\n\n        r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n        log.info(f'All Went fine')\n        # Load data into S3 & Redis\n        s3 = boto3.resource('s3')\n        i = 0\n        \"\"\"\n        while i < int(RECORD_COUNT):\n            print(f\"here:{i}\")\n            # PUT data in S3\n            random_str = str(uuid.uuid1())\n            object = s3.Object(BUCKET_NAME, f'akane-{random_str}.txt')\n            object.put(\n                Body=f'This is some generated data for akane-{random_str}.txt')\n            # Cache the data [ KEY = bucket:filenameX.txt]\n            r.set(f'{BUCKET_NAME}:akane-{random_str}.txt',\n                  f'This is some generated data for akane-{random_str}.txt')\n            log.info(f'Successfully Loaded Item:{i}')\n            i += 1\n        \"\"\"\n        while i < RECORD_COUNT:\n            # Generate Random String for file content\n        random_str = random_str_generator(random.randrange(40, 200))\n        # PUT data in S3\n        object = s3.Object(BUCKET_NAME, 'filename' + str(i) + '.txt')\n        object.put(\n            Body=\"This is some generated data for filename\" + str(irandom_str) + '.txt')\n        # Cache the data [ KEY = bucket:filenameX.txt]\n        r.set(BUCKET_NAME + ':filename' + str(i) + '.txt',\n              'This is some generated data for filename' + str(random_str) + '.txt')\n        i += 1\n        print(\"Data loaded successfully!\")\n        # MINE\n\n        attributes = {\n            'Response': f\"Message sent from function. MessageReceived:{message}\"\n        }\n\n        cfnresponse.send(event, context, cfnresponse.SUCCESS,\n                         attributes, physical_id)\n    except Exception as e:\n        log.exception(e)\n        # cfnresponse's error message is always \"see CloudWatch\"\n        cfnresponse.send(event, context, cfnresponse.FAILED, {}, physical_id)\n"
+          "ZipFile": "# -*- coding: utf-8 -*-\n\nimport logging as log\nimport os\nimport random\nimport string\nimport uuid\n\nimport boto3\nimport cfnresponse\nimport redis\n\n\ndef random_str_generator(size=40, chars=string.ascii_uppercase + string.digits):\n    ''' Generate Random String for given string length '''\n    return ''.join(random.choice(chars) for _ in range(size))\n\n\ndef lambda_handler(event, context):\n    log.getLogger().setLevel(log.INFO)\n\n    # This needs to change if there are to be multiple resources in the same stack\n    physical_id = 'TheOnlyCustomResource'\n\n    try:\n        log.info(f'Input event: {event}')\n\n        # Check if this is a Create and we're failing Creates\n        if event['RequestType'] == 'Create' and event['ResourceProperties'].get('FailCreate', False):\n            raise RuntimeError('Create failure requested')\n\n        # Do the thing\n        # OriginalCode\n        message = event['ResourceProperties']['Message']\n\n        # MINE\n        REDIS_HOST = os.environ.get('REDIS_HOST')\n        REDIS_PORT = os.environ.get('REDIS_PORT')\n        BUCKET_NAME = os.environ.get('BUCKET_NAME', 6379)\n        RECORD_COUNT = os.environ.get('RECORD_COUNT', 200)\n\n        if not REDIS_HOST or not BUCKET_NAME:\n            log.info(\n                f'Either REDIS_HOST:{REDIS_HOST} or BUCKET_NAME:{BUCKET_NAME} is none')\n            return cfnresponse.send(event, context, cfnresponse.FAILED, {}, physical_id)\n\n        r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n        log.info(f'All Went fine')\n        # Load data into S3 & Redis\n        s3 = boto3.resource('s3')\n        i = 0\n        while i < int(RECORD_COUNT):\n            # Generate Random String for file content\n            random_str = random_str_generator(random.randrange(200, 400))\n            random_txt = f'Mystique Automation Powers Valaxy. {random_str}'\n            # PUT data in S3\n            object = s3.Object(BUCKET_NAME, 'filename' + str(i) + '.txt')\n            object.put(Body=random_txt)\n            # Cache the data [ KEY = bucket:filenameX.txt]\n            r.set(BUCKET_NAME + ':filename' + str(i) + '.txt', random_txt)\n            i += 1\n        print(\"Data loaded successfully!\")\n        # MINE\n\n        attributes = {\n            'Response': f\"Message sent from function. MessageReceived:{message}\"\n        }\n\n        cfnresponse.send(event, context, cfnresponse.SUCCESS,\n                         attributes, physical_id)\n    except Exception as e:\n        log.exception(e)\n        # cfnresponse's error message is always \"see CloudWatch\"\n        cfnresponse.send(event, context, cfnresponse.FAILED, {}, physical_id)\n"
         },
         "Handler": "index.lambda_handler",
         "Role": {

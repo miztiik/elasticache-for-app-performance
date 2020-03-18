@@ -48,7 +48,7 @@ class ElasticacheForAppPerformanceStack(core.Stack):
             generation=_ec2.AmazonLinuxGeneration.AMAZON_LINUX_2
         )
         # ec2 Instance Role
-        _instance_role = _iam.Role(self, "webAppClientRoleId",
+        _instance_role = _iam.Role(self, "webAppClientRole",
                                    assumed_by=_iam.ServicePrincipal(
                                        'ec2.amazonaws.com'),
                                    managed_policies=[

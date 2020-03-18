@@ -1,5 +1,5 @@
 from aws_cdk import aws_cloudformation as cfn
-from aws_cdk import aws_iam as iam
+from aws_cdk import aws_iam as _iam
 from aws_cdk import aws_lambda as _lambda
 from aws_cdk import aws_ec2 as _ec2
 from aws_cdk import core
@@ -26,17 +26,33 @@ class redis_data_ingester(core.Construct):
         except OSError:
             print('Unable to read UserData script')
 
-        roleStmt1 = iam.PolicyStatement()
-        # https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html
-        roleStmt1.add_actions("ec2:CreateNetworkInterface")
-        roleStmt1.add_all_resources()
-        roleStmt1.effect = iam.Effect.ALLOW
+        # Create IAM Permission Statements that are required by the Lambda
 
-        roleStmt2 = iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
+        _instance_role = _iam.Role(self, "webAppClientRoleId",
+                                   assumed_by=_iam.ServicePrincipal(
+                                       'ec2.amazonaws.com'),
+                                   managed_policies=[
+                                       _iam.ManagedPolicy.from_aws_managed_policy_name(
+                                           'AmazonSSMManagedInstanceCore'
+                                       ),
+                                       _iam.ManagedPolicy.from_aws_managed_policy_name(
+                                           'AmazonS3ReadOnlyAccess'
+                                       )
+                                   ])
+
+        roleStmt1 = _iam.PolicyStatement(
+            effect=_iam.Effect.ALLOW,
+            resources=['*'],
+            actions=['ec2:CreateNetworkInterface',
+                     'ec2:DescribeNetworkInterfaces',
+                     'ec2:DeleteNetworkInterface']
+        )
+        roleStmt1.sid = "AllowLambdaToManageVPCENI"
+
+        roleStmt2 = _iam.PolicyStatement(
+            effect=_iam.Effect.ALLOW,
             resources=[
-                config_params.get('BUCKET').bucket_arn,
-                'arn:aws:s3:::*'
+                config_params.get('BUCKET').bucket_arn
             ],
             actions=['s3:GetObject',
                      's3:PutObject']

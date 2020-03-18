@@ -91,6 +91,7 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
         ```
 
     - Compare the data retrieval times for both these queries.
+    ![miztiik_query_qatency_comparison_for_redis_vs_s3](images/miztiik_query_qatency_comparison_for_redis_vs_s3.png)
 
     You will notice that the queries against ElastiCache Redis were significantly quicker than the queries against S3.
 

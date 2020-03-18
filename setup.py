@@ -9,14 +9,14 @@ setuptools.setup(
     name="elasticache_for_app_performance",
     version="0.0.1",
 
-    description="An empty CDK Python app",
+    description="Launch app with EC2, Redis, S3, Lambda to Test Redis Performance",
     long_description=long_description,
     long_description_content_type="text/markdown",
 
     author="author",
 
-    package_dir={"": "elasticache_for_app_performance"},
-    packages=setuptools.find_packages(where="elasticache_for_app_performance"),
+    package_dir={"": "app_stacks"},
+    packages=setuptools.find_packages(where="app_stacks"),
 
     install_requires=[
         "aws-cdk.core==1.27.0",

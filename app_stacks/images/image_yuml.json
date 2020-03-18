@@ -1,0 +1,9 @@
+{
+    "customisations": "scruffy;dir:LR;scale:180",
+    "type": "class",
+    "dsl": ", [User ..1]-->[App{bg:orange}], , [User ..2]-->[App{bg:orange}], , [User ..10]-->[App{bg:orange}], , [User ..N]-->[App{bg:orange}], , [App{bg:orange}]-->[S3 Bucket | Data{bg:red}], , [App{bg:orange}]-->[ElastiCache|Data{bg:green}]",
+    "digest": "461ead43",
+    "file_only": false,
+    "mime": "image/svg+xml",
+    "extension": "svg"
+}

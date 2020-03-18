@@ -1,7 +1,16 @@
 {
   "app": "python3 app.py",
+  "versionReporting": false,
   "context": {
-    "@aws-cdk/core:enableStackNameDuplicates": "true",
-    "aws-cdk:enableDiffNoFail": "true"
+    "owner": "Mystique",
+    "github_repo_url": "https://github.com/miztiik/elasticache-for-app-performance",
+    "github_profile": "https://github.com/miztiik",
+    "youtube_profile": "https://youtube.com/c/valaxytechnologies",
+    "envs": {
+      "dev": {
+        "region": "us-east-1",
+        "account": ""
+      }
+    }
   }
 }

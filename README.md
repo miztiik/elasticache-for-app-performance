@@ -1,58 +1,126 @@
+# Use ElastiCache to improve Application Performance
 
-# Welcome to your CDK Python project!
+Many applications use S3 as the backend for storing data like images, videos, files etc., As your user base grows and you start reaching millions of requests to these objects, Latency and Costs play an important role in maintaining application performance. Especially if your application requires <5 ms responses. For such applications, customers can complement S3 with an in-memory cache like ElastiCache for Redis. It reduces S3 retrieval costs and improves application performance.
 
-This is a blank project for Python development with CDK.
+  ![Miztiik Serverless Video Metadata Extractor](images/miztiik_elasticache-for-app-performance_architecture.png)
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+Here, let me show, how you can set up an in-memory cache using ElastiCache for Redis, along with best practices to be used with S3. You can also test the performance benefits of incorporating a cache for S3. All the necessary code is written in Cloudformation using CDK.
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the .env
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+  Follow this article in **[Youtube](https://www.youtube.com/c/ValaxyTechnologies)**
 
-To manually create a virtualenv on MacOS and Linux:
+1. ## 🧰 Prerequisites
 
-```
-$ python3 -m venv .env
-```
+    This demo, instructions, scripts and cloudformation template is designed to be run in `us-east-1`. With few modifications you can try it out in other regions as well(_Not covered here_).
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+    - AWS CLI pre-configured - [Get help here](https://youtu.be/TPyyfmQte0U)
+    - AWS CDK Installed & Configured - [Get help here](https://www.youtube.com/watch?v=MKwxpszw0Rc)
 
-```
-$ source .env/bin/activate
-```
+1. ## ⚙️ Setting up the environment
 
-If you are a Windows platform, you would activate the virtualenv like this:
+    - Get the application code
 
-```
-% .env\Scripts\activate.bat
-```
+        ```bash
+        git clone https://github.com:miztiik/elasticache-for-app-performance.git
+        cd elasticache-for-app-performance
+        ```
 
-Once the virtualenv is activated, you can install the required dependencies.
+1. ## 🚀 Deployment using AWS CDK
 
-```
-$ pip install -r requirements.txt
-```
+    If you have AWS CDK installed you can close this repository and deploy the stack with,
 
-At this point you can now synthesize the CloudFormation template for this code.
+    ```bash
+    # If you DONT have cdk installed
+    npm install -g aws-cdk
 
-```
-$ cdk synth
-```
+    # Make sure you in root directory
+    cd elasticache-for-app-performance
+    source .env/bin/activate
+    pip install -r requirements.txt
+    ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
+    The very first time you deploy an AWS CDK app into an environment _(account/region)_, you’ll need to install a `bootstrap stack`, Otherwise just go aheadand   deploy using `cdk deploy`
 
-## Useful commands
+    ```bash
+    cdk bootstrap
+    cdk deploy
+    ```
 
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
+1. ## 🔬 Testing the solution
 
-Enjoy!
+    Your ElastiCache Redis cluster is pre-loaded with a total of 200 files as a _set_. The same data is stored in your S3 bucket. The size of these files are slighly randomized with random string content. _To know more check out the `redis_data_ingester_lambda_function`._
+
+    - In the _Outputs_ section of the Clouformation template/service, Make a note of the following paramets, we will use them later
+        - `Redis Host` domain name - This cache cluster is pre-loaded with data for querying
+        - `Redis Port`
+        - `S3 Bucket Name` - This bucket is pre-loaded with data for querying
+        - `EC2 Instance` - This server will be used to connect/query S3 and Redis
+    - Connect to the EC2 instance using Session Manager[Get help here](https://www.youtube.com/watch?v=-ASMtZBrx-k)
+    - Clone this repo, We need the `helper_scripts` in this repo
+
+        ```bash
+        git clone https://github.com:miztiik/elasticache-for-app-performance.git
+        cd elasticache-for-app-performance
+        cd helper_scripts
+        ```
+
+    - Edit the file `redis_stack_configs.py` with the values from your clouformation outputs.
+    - Fetch data from **Redis**:
+
+        ```bash
+        python3 query_redis.py
+        ```
+
+    - Fetch data from **S3**:
+
+        ```bash
+        python3 query_s3.py
+        ```
+
+    - Sample results from my test,
+
+        ```bash
+        # Redis Query Results
+        Average Latency in Microseconds: 683.2525252525253
+        MAX Latency in Microseconds: 1890
+        MIN Latency in Microseconds: 606
+
+        # S3 Query Results
+        Average Latency in Microseconds: 22621.565656565657
+        MAX Latency in Microseconds: 224836
+        MIN Latency in Microseconds: 10334
+        ```
+
+    - Compare the data retrieval times for both these queries.
+
+    You will notice that the queries against ElastiCache Redis were significantly quicker than the queries against S3.
+
+1. ## 🧹 CleanUp
+
+    If you want to destroy all the resources created by the stack, Execute the below command to delete the stack, or _you can delete the stack from console as well_
+
+    - Delete CloudWatch Lambda LogGroups
+    - _Any other customer resources, you have created for this demo_
+
+    ```bash
+    # Delete from cdk
+    cdk destroy
+
+    # Delete the CF Stack, If you used cloudformation to deploy the stack.
+    aws cloudformation delete-stack \
+        --stack-name "MiztiikAutomationStack" \
+        --region "${AWS_REGION}"
+    ```
+
+    This is not an exhaustive list, please carry out other necessary steps as maybe applicable to your needs.
+
+## 👋 Buy me a coffee
+
+[Buy me](https://paypal.me/valaxy) a coffee ☕, _or_ You can reach out to get more details through [here](https://youtube.com/c/valaxytechnologies/about).
+
+### 📚 References
+
+1. [Python Pip Redis](https://pypi.org/project/redis/)
+
+### 🏷️ Metadata
+
+**Level**: 400

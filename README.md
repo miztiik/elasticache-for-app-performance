@@ -20,7 +20,7 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
     - Get the application code
 
         ```bash
-        git clone https://github.com:miztiik/elasticache-for-app-performance.git
+        git clone https://github.com/miztiik/elasticache-for-app-performance.git
         cd elasticache-for-app-performance
         ```
 

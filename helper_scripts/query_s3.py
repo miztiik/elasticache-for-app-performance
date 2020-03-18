@@ -16,9 +16,17 @@ s3 = boto3.resource('s3')
 keys = []
 i = 0
 
+"""
 while i < int(RECORD_COUNT):
     # Randomize file seek
     _seeker = random.randrange(1, 201)
+
+    value = r.get(BUCKET_NAME + ':filename' + str(_seeker) + '.txt')
+"""
+
+while i < int(RECORD_COUNT):
+    # Randomize file seek
+    _seeker = random.randrange(1, 199)
 
     # Start timer
     start = datetime.datetime.now()

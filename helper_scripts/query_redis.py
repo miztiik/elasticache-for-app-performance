@@ -20,7 +20,7 @@ i = 0
 
 while i < int(RECORD_COUNT):
     # Randomize file seek
-    _seeker = random.randrange(1, 201)
+    _seeker = random.randrange(1, 199)
 
     # Start timer
     start = datetime.datetime.now()

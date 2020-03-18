@@ -52,7 +52,7 @@ class redis_data_ingester(core.Construct):
         roleStmt2 = _iam.PolicyStatement(
             effect=_iam.Effect.ALLOW,
             resources=[
-                config_params.get('BUCKET').bucket_arn
+                f"{config_params.get('BUCKET').bucket_arn}/*"
             ],
             actions=['s3:GetObject',
                      's3:PutObject']

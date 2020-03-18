@@ -51,7 +51,7 @@ def lambda_handler(event, context):
         i = 0
         while i < int(RECORD_COUNT):
             # Generate Random String for file content
-            random_str = random_str_generator(random.randrange(40, 200))
+            random_str = random_str_generator(random.randrange(200, 400))
             random_txt = f'Mystique Automation Powers Valaxy. {random_str}'
             # PUT data in S3
             object = s3.Object(BUCKET_NAME, 'filename' + str(i) + '.txt')

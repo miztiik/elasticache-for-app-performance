@@ -24,7 +24,17 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
         cd elasticache-for-app-performance
         ```
 
-1. ## 🚀 Deployment using AWS CDK
+1. ## 🚀 Resource Deployment using AWS CDK
+
+    The cdk stack provided in the repo will create the following resources,
+    - VPC with public & private subnets, route table for private subnet
+    - NAT Gateway x 1 for private subnet to communicate with the internet
+    - AWS ElastiCache inside private subnet
+    - S3 Bucket
+    - Lambda - To ingest dummy test data into _S3_ & _AWS ElastiCache_
+    - EC2 Instance in public subnet: We will use this instances to simulate a application client querying _S3_ or _AWS ElastiCache_
+
+    **Note**: _Most of the resources should be covered under the aws free tier, except the NAT Gateway. You can swap it out for a NAT Instance_
 
     If you have AWS CDK installed you can close this repository and deploy the stack with,
 
@@ -54,7 +64,7 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
         - `Redis Port`
         - `S3 Bucket Name` - This bucket is pre-loaded with data for querying
         - `EC2 Instance` - This server will be used to connect/query S3 and Redis
-    - Connect to the EC2 instance using Session Manager[Get help here](https://www.youtube.com/watch?v=-ASMtZBrx-k)
+    - Connect to the EC2 instance using Session Manager - [Get help here](https://www.youtube.com/watch?v=-ASMtZBrx-k)
     - Clone this repo, We need the `helper_scripts` in this repo
 
         ```bash
@@ -99,6 +109,7 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
 
     If you want to destroy all the resources created by the stack, Execute the below command to delete the stack, or _you can delete the stack from console as well_
 
+    - Resources created during [deployment](#🚀-resource-deployment-using-aws-cdk)
     - Delete CloudWatch Lambda LogGroups
     - _Any other customer resources, you have created for this demo_
 
@@ -121,6 +132,8 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
 ### 📚 References
 
 1. [Python Pip Redis](https://pypi.org/project/redis/)
+1. [AWS Blog](https://aws.amazon.com/blogs/storage/turbocharge-amazon-s3-with-amazon-elasticache-for-redis)
+1. [AWS Blog: Latency Reduction](https://aws.amazon.com/blogs/database/latency-reduction-of-hybrid-architectures-with-amazon-elasticache)
 
 ### 🏷️ Metadata
 

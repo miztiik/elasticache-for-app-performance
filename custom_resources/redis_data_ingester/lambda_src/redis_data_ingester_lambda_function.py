@@ -3,6 +3,7 @@
 import logging as log
 import os
 import random
+import string
 import uuid
 
 import boto3
@@ -48,7 +49,7 @@ def lambda_handler(event, context):
         # Load data into S3 & Redis
         s3 = boto3.resource('s3')
         i = 0
-        while i < RECORD_COUNT:
+        while i < int(RECORD_COUNT):
             # Generate Random String for file content
             random_str = random_str_generator(random.randrange(40, 200))
             random_txt = f'Mystique Automation Powers Valaxy. {random_str}'

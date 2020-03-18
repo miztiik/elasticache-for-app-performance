@@ -18,7 +18,7 @@ keys = []
 i = 0
 
 
-while i < RECORD_COUNT:
+while i < int(RECORD_COUNT):
     # Randomize file seek
     _seeker = random.randrange(1, 201)
 

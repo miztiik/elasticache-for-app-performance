@@ -1,15 +1,21 @@
+# -*- coding: utf-8 -*-
+
+import logging as log
+import os
+import random
+import uuid
+
+import boto3
+import cfnresponse
+import redis
+
+
 def random_str_generator(size=40, chars=string.ascii_uppercase + string.digits):
+    ''' Generate Random String for given string length '''
     return ''.join(random.choice(chars) for _ in range(size))
 
 
 def lambda_handler(event, context):
-    import redis
-    import logging as log
-    import cfnresponse
-    import boto3
-    import os
-    import uuid
-    import random
     log.getLogger().setLevel(log.INFO)
 
     # This needs to change if there are to be multiple resources in the same stack
@@ -42,31 +48,16 @@ def lambda_handler(event, context):
         # Load data into S3 & Redis
         s3 = boto3.resource('s3')
         i = 0
-        """
-        while i < int(RECORD_COUNT):
-            print(f"here:{i}")
-            # PUT data in S3
-            random_str = str(uuid.uuid1())
-            object = s3.Object(BUCKET_NAME, f'akane-{random_str}.txt')
-            object.put(
-                Body=f'This is some generated data for akane-{random_str}.txt')
-            # Cache the data [ KEY = bucket:filenameX.txt]
-            r.set(f'{BUCKET_NAME}:akane-{random_str}.txt',
-                  f'This is some generated data for akane-{random_str}.txt')
-            log.info(f'Successfully Loaded Item:{i}')
-            i += 1
-        """
         while i < RECORD_COUNT:
             # Generate Random String for file content
-        random_str = random_str_generator(random.randrange(40, 200))
-        # PUT data in S3
-        object = s3.Object(BUCKET_NAME, 'filename' + str(i) + '.txt')
-        object.put(
-            Body="This is some generated data for filename" + str(irandom_str) + '.txt')
-        # Cache the data [ KEY = bucket:filenameX.txt]
-        r.set(BUCKET_NAME + ':filename' + str(i) + '.txt',
-              'This is some generated data for filename' + str(random_str) + '.txt')
-        i += 1
+            random_str = random_str_generator(random.randrange(40, 200))
+            random_txt = f'Mystique Automation Powers Valaxy. {random_str}'
+            # PUT data in S3
+            object = s3.Object(BUCKET_NAME, 'filename' + str(i) + '.txt')
+            object.put(Body=random_txt)
+            # Cache the data [ KEY = bucket:filenameX.txt]
+            r.set(BUCKET_NAME + ':filename' + str(i) + '.txt', random_txt)
+            i += 1
         print("Data loaded successfully!")
         # MINE
 

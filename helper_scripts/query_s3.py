@@ -3,11 +3,12 @@
 import boto3
 import datetime
 import redis_stack_configs
-
+import random
 
 REDIS_HOST = redis_stack_configs.REDIS_HOST
 REDIS_PORT = redis_stack_configs.REDIS_PORT
 BUCKET_NAME = redis_stack_configs.BUCKET_NAME
+RECORD_COUNT = redis_stack_configs.RECORD_COUNT
 
 # Query & Record Individual GET requests on S3 Objects
 s3 = boto3.resource('s3')
@@ -15,12 +16,14 @@ s3 = boto3.resource('s3')
 keys = []
 i = 0
 
-while i < 100:
+while i < RECORD_COUNT:
+    # Randomize file seek
+    _seeker = random.randrange(1, 201)
 
     # Start timer
     start = datetime.datetime.now()
 
-    obj = s3.Object(BUCKET_NAME, 'filename' + str(i) + '.txt')
+    obj = s3.Object(BUCKET_NAME, 'filename' + str(_seeker) + '.txt')
     data = obj.get()['Body'].read().decode('utf-8')
 
     end = datetime.datetime.now()

@@ -163,7 +163,7 @@ class ElasticacheForAppPerformanceStack(core.Stack):
                 "REDIS_HOST": redis_cluster.attr_redis_endpoint_address,
                 'REDIS_PORT': '6379',
                 "BUCKET_NAME": app_data_bkt.bucket_name,
-                'RECORD_COUNT': '10',
+                'RECORD_COUNT': '200',
                 'BUCKET': app_data_bkt,
                 'VPC': vpc,
                 'REDIS_SG': redis_sg
@@ -173,7 +173,7 @@ class ElasticacheForAppPerformanceStack(core.Stack):
                     "REDIS_HOST": redis_cluster.attr_redis_endpoint_address,
                     'REDIS_PORT': '6379',
                     "BUCKET_NAME": app_data_bkt.bucket_name,
-                    'RECORD_COUNT': '10'
+                    'RECORD_COUNT': '200'
                 }
             ]
         )

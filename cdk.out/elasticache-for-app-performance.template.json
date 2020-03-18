@@ -402,7 +402,7 @@
             "BUCKET_NAME": {
               "Ref": "appDataBkt3B1B2198"
             },
-            "RECORD_COUNT": "10"
+            "RECORD_COUNT": "200"
           }
         ]
       },
@@ -544,7 +544,7 @@
             "BUCKET_NAME": {
               "Ref": "appDataBkt3B1B2198"
             },
-            "RECORD_COUNT": "10"
+            "RECORD_COUNT": "200"
           }
         },
         "Layers": [

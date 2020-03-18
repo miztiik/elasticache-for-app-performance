@@ -3,7 +3,8 @@
 # version: 27Mar2020
 
 # Lets log everything to console for being lazy (not recommended)
-exec >>(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+# https://aws.amazon.com/premiumsupport/knowledge-center/ec2-linux-log-user-data/
+# exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 sudo yum install -y httpd
 IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)

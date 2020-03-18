@@ -1,0 +1,848 @@
+{
+  "Resources": {
+    "customVpcId909241C7": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.10.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/Resource"
+      }
+    },
+    "customVpcIdpublicSubnet1Subnet60932DA0": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.10.0.0/24",
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1"
+          },
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1/Subnet"
+      }
+    },
+    "customVpcIdpublicSubnet1RouteTableE6E7B391": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1/RouteTable"
+      }
+    },
+    "customVpcIdpublicSubnet1RouteTableAssociation88D0240E": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIdpublicSubnet1RouteTableE6E7B391"
+        },
+        "SubnetId": {
+          "Ref": "customVpcIdpublicSubnet1Subnet60932DA0"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1/RouteTableAssociation"
+      }
+    },
+    "customVpcIdpublicSubnet1DefaultRouteC0B2C5CF": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIdpublicSubnet1RouteTableE6E7B391"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "customVpcIdIGWC038BCF9"
+        }
+      },
+      "DependsOn": [
+        "customVpcIdVPCGWCADF12C5"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1/DefaultRoute"
+      }
+    },
+    "customVpcIdpublicSubnet1EIP66520735": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1/EIP"
+      }
+    },
+    "customVpcIdpublicSubnet1NATGatewayACC64F60": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "customVpcIdpublicSubnet1EIP66520735",
+            "AllocationId"
+          ]
+        },
+        "SubnetId": {
+          "Ref": "customVpcIdpublicSubnet1Subnet60932DA0"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet1/NATGateway"
+      }
+    },
+    "customVpcIdpublicSubnet2Subnet96A2808C": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.10.1.0/24",
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet2"
+          },
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet2/Subnet"
+      }
+    },
+    "customVpcIdpublicSubnet2RouteTableDC141759": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet2/RouteTable"
+      }
+    },
+    "customVpcIdpublicSubnet2RouteTableAssociation784FD1BC": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIdpublicSubnet2RouteTableDC141759"
+        },
+        "SubnetId": {
+          "Ref": "customVpcIdpublicSubnet2Subnet96A2808C"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet2/RouteTableAssociation"
+      }
+    },
+    "customVpcIdpublicSubnet2DefaultRouteE835625B": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIdpublicSubnet2RouteTableDC141759"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "customVpcIdIGWC038BCF9"
+        }
+      },
+      "DependsOn": [
+        "customVpcIdVPCGWCADF12C5"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/publicSubnet2/DefaultRoute"
+      }
+    },
+    "customVpcIdappSubnet1Subnet34A83ED1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.10.2.0/24",
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet1"
+          },
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "app"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet1/Subnet"
+      }
+    },
+    "customVpcIdappSubnet1RouteTable5C647A8B": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet1/RouteTable"
+      }
+    },
+    "customVpcIdappSubnet1RouteTableAssociation9F1D19CA": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIdappSubnet1RouteTable5C647A8B"
+        },
+        "SubnetId": {
+          "Ref": "customVpcIdappSubnet1Subnet34A83ED1"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet1/RouteTableAssociation"
+      }
+    },
+    "customVpcIdappSubnet1DefaultRouteE96DBDA0": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIdappSubnet1RouteTable5C647A8B"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "customVpcIdpublicSubnet1NATGatewayACC64F60"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet1/DefaultRoute"
+      }
+    },
+    "customVpcIdappSubnet2SubnetA6B3F000": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.10.3.0/24",
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet2"
+          },
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "app"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet2/Subnet"
+      }
+    },
+    "customVpcIdappSubnet2RouteTableEFF61209": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet2/RouteTable"
+      }
+    },
+    "customVpcIdappSubnet2RouteTableAssociation5B3C1885": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIdappSubnet2RouteTableEFF61209"
+        },
+        "SubnetId": {
+          "Ref": "customVpcIdappSubnet2SubnetA6B3F000"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet2/RouteTableAssociation"
+      }
+    },
+    "customVpcIdappSubnet2DefaultRoute9851A7FF": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIdappSubnet2RouteTableEFF61209"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "customVpcIdpublicSubnet1NATGatewayACC64F60"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/appSubnet2/DefaultRoute"
+      }
+    },
+    "customVpcIddbSubnet1Subnet9E61C2C0": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.10.4.0/24",
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet1"
+          },
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "db"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Isolated"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet1/Subnet"
+      }
+    },
+    "customVpcIddbSubnet1RouteTableEF4FB8EC": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet1/RouteTable"
+      }
+    },
+    "customVpcIddbSubnet1RouteTableAssociation869AEF51": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIddbSubnet1RouteTableEF4FB8EC"
+        },
+        "SubnetId": {
+          "Ref": "customVpcIddbSubnet1Subnet9E61C2C0"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet1/RouteTableAssociation"
+      }
+    },
+    "customVpcIddbSubnet2Subnet77772547": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.10.5.0/24",
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet2"
+          },
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "db"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Isolated"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet2/Subnet"
+      }
+    },
+    "customVpcIddbSubnet2RouteTable74F66B22": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet2/RouteTable"
+      }
+    },
+    "customVpcIddbSubnet2RouteTableAssociationEAF6F74D": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "customVpcIddbSubnet2RouteTable74F66B22"
+        },
+        "SubnetId": {
+          "Ref": "customVpcIddbSubnet2Subnet77772547"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/dbSubnet2/RouteTableAssociation"
+      }
+    },
+    "customVpcIdIGWC038BCF9": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "elasticache-for-app-performance-vpc-stack/customVpcId"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/IGW"
+      }
+    },
+    "customVpcIdVPCGWCADF12C5": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "customVpcId909241C7"
+        },
+        "InternetGatewayId": {
+          "Ref": "customVpcIdIGWC038BCF9"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance-vpc-stack/customVpcId/VPCGW"
+      }
+    }
+  },
+  "Outputs": {
+    "customVpcOutput": {
+      "Value": {
+        "Ref": "customVpcId909241C7"
+      },
+      "Export": {
+        "Name": "VpcId"
+      }
+    },
+    "ExportsOutputRefcustomVpcId909241C79F191090": {
+      "Value": {
+        "Ref": "customVpcId909241C7"
+      },
+      "Export": {
+        "Name": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcId909241C79F191090"
+      }
+    },
+    "ExportsOutputRefcustomVpcIdpublicSubnet1Subnet60932DA0C7ABB8C2": {
+      "Value": {
+        "Ref": "customVpcIdpublicSubnet1Subnet60932DA0"
+      },
+      "Export": {
+        "Name": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdpublicSubnet1Subnet60932DA0C7ABB8C2"
+      }
+    },
+    "ExportsOutputRefcustomVpcIdappSubnet1Subnet34A83ED1397AE3B1": {
+      "Value": {
+        "Ref": "customVpcIdappSubnet1Subnet34A83ED1"
+      },
+      "Export": {
+        "Name": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdappSubnet1Subnet34A83ED1397AE3B1"
+      }
+    },
+    "ExportsOutputRefcustomVpcIdappSubnet2SubnetA6B3F000A8BBF71E": {
+      "Value": {
+        "Ref": "customVpcIdappSubnet2SubnetA6B3F000"
+      },
+      "Export": {
+        "Name": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdappSubnet2SubnetA6B3F000A8BBF71E"
+      }
+    }
+  }
+}

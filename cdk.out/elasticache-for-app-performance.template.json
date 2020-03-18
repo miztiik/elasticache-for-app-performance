@@ -1,0 +1,685 @@
+{
+  "Resources": {
+    "webAppClientRoleId17FCC2F6": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "ec2.",
+                      {
+                        "Ref": "AWS::URLSuffix"
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore"
+              ]
+            ]
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/AmazonS3ReadOnlyAccess"
+              ]
+            ]
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/webAppClientRoleId/Resource"
+      }
+    },
+    "webAppClientInstanceSecurityGroupFEBFE59B": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "elasticache-for-app-performance/webAppClient/InstanceSecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "web_app_Client"
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcId909241C79F191090"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/webAppClient/InstanceSecurityGroup/Resource"
+      }
+    },
+    "webAppClientInstanceProfile965BCC9C": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "webAppClientRoleId17FCC2F6"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/webAppClient/InstanceProfile"
+      }
+    },
+    "webAppClient35496D83": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "IamInstanceProfile": {
+          "Ref": "webAppClientInstanceProfile965BCC9C"
+        },
+        "ImageId": {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+        },
+        "InstanceType": "t2.micro",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "webAppClientInstanceSecurityGroupFEBFE59B",
+              "GroupId"
+            ]
+          }
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdpublicSubnet1Subnet60932DA0C7ABB8C2"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          },
+          {
+            "Key": "Name",
+            "Value": "web_app_Client"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": "#!/bin/bash -xe\n\n# version: 27Mar2020\n\n# Lets log everything to console for being lazy (not recommended)\nexec >>(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1\n\nsudo yum install -y httpd\nIP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)\necho \"<html><head><title>Modern Web App</title><style>body {margin-top: 40px;background-color: #333;}</style></head><body><div style=color:white;text-align:center><h1 style='font-size:7vw;'>Modern Web App</h1><p>Congratulations! Your Web Server is Online.</p><small>Pages served from $IP</small></div></body></html>\" >> /var/www/html/index.html\nsudo chkconfig httpd on\nsudo service httpd start\n\n# Prepare the server for python3\nyum -y install python-pip python3 git\npip3 install redis\npip3 install boto3"
+        }
+      },
+      "DependsOn": [
+        "webAppClientRoleId17FCC2F6"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/webAppClient/Resource"
+      }
+    },
+    "appDataBkt3B1B2198": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          }
+        ]
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/appDataBkt/Resource"
+      }
+    },
+    "redisSecurityGroupF1670DA3": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security Group for Redis Cache",
+        "GroupName": "RedisSG",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow Clients to fetch data from Redis Cache Cluster",
+            "FromPort": 6379,
+            "IpProtocol": "tcp",
+            "ToPort": 6379
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcId909241C79F191090"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/redisSecurityGroup/Resource"
+      }
+    },
+    "redissg": {
+      "Type": "AWS::ElastiCache::SubnetGroup",
+      "Properties": {
+        "Description": "subnet group for redis",
+        "SubnetIds": [
+          {
+            "Fn::ImportValue": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdappSubnet1Subnet34A83ED1397AE3B1"
+          },
+          {
+            "Fn::ImportValue": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdappSubnet2SubnetA6B3F000A8BBF71E"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/redis-sg"
+      }
+    },
+    "redisCluster": {
+      "Type": "AWS::ElastiCache::CacheCluster",
+      "Properties": {
+        "CacheNodeType": "cache.t3.micro",
+        "Engine": "redis",
+        "NumCacheNodes": 1,
+        "AutoMinorVersionUpgrade": true,
+        "CacheSubnetGroupName": {
+          "Ref": "redissg"
+        },
+        "ClusterName": "miztiik-cluster",
+        "Port": 6379,
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          }
+        ],
+        "VpcSecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "redisSecurityGroupF1670DA3",
+              "GroupId"
+            ]
+          }
+        ]
+      },
+      "DependsOn": [
+        "redissg"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/redisCluster"
+      }
+    },
+    "ingestDataredisPythonLibLayerE9A6D6E3": {
+      "Type": "AWS::Lambda::LayerVersion",
+      "Properties": {
+        "Content": {
+          "S3Bucket": {
+            "Ref": "AssetParametersec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264S3BucketD65BFB2B"
+          },
+          "S3Key": {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Fn::Select": [
+                    0,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264S3VersionKey42C69406"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264S3VersionKey42C69406"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "CompatibleRuntimes": [
+          "python3.7"
+        ],
+        "Description": "Layer to connect to redis using python",
+        "LicenseInfo": "This product uses redis code from https://pypi.org/project/redis/ library"
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/ingestData/redisPythonLibLayer/Resource",
+        "aws:asset:path": "asset.ec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264.zip",
+        "aws:asset:property": "Content"
+      }
+    },
+    "ingestDataB903D79F": {
+      "Type": "AWS::CloudFormation::CustomResource",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "SingletonLambdamystique304ee111e89c2dfa7ae01bbebc287EFCE7",
+            "Arn"
+          ]
+        },
+        "Message": [
+          {
+            "REDIS_HOST": {
+              "Fn::GetAtt": [
+                "redisCluster",
+                "RedisEndpoint.Address"
+              ]
+            },
+            "REDIS_PORT": "6379",
+            "BUCKET_NAME": {
+              "Ref": "appDataBkt3B1B2198"
+            },
+            "RECORD_COUNT": "10"
+          }
+        ]
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/ingestData/Resource/Default"
+      }
+    },
+    "SingletonLambdamystique304ee111e89c2dfa7ae01bbebcServiceRole7E8318BA": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+              ]
+            ]
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/SingletonLambdamystique304ee111e89c2dfa7ae01bbebc/ServiceRole/Resource"
+      }
+    },
+    "SingletonLambdamystique304ee111e89c2dfa7ae01bbebcServiceRoleDefaultPolicy7AC098CA": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ec2:CreateNetworkInterface",
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "appDataBkt3B1B2198",
+                    "Arn"
+                  ]
+                },
+                "arn:aws:s3:::*"
+              ],
+              "Sid": "AllowS3ObjectReadWriteAccess"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "SingletonLambdamystique304ee111e89c2dfa7ae01bbebcServiceRoleDefaultPolicy7AC098CA",
+        "Roles": [
+          {
+            "Ref": "SingletonLambdamystique304ee111e89c2dfa7ae01bbebcServiceRole7E8318BA"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/SingletonLambdamystique304ee111e89c2dfa7ae01bbebc/ServiceRole/DefaultPolicy/Resource"
+      }
+    },
+    "SingletonLambdamystique304ee111e89c2dfa7ae01bbebc287EFCE7": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "def random_str_generator(size=40, chars=string.ascii_uppercase + string.digits):\n    return ''.join(random.choice(chars) for _ in range(size))\n\n\ndef lambda_handler(event, context):\n    import redis\n    import logging as log\n    import cfnresponse\n    import boto3\n    import os\n    import uuid\n    import random\n    log.getLogger().setLevel(log.INFO)\n\n    # This needs to change if there are to be multiple resources in the same stack\n    physical_id = 'TheOnlyCustomResource'\n\n    try:\n        log.info(f'Input event: {event}')\n\n        # Check if this is a Create and we're failing Creates\n        if event['RequestType'] == 'Create' and event['ResourceProperties'].get('FailCreate', False):\n            raise RuntimeError('Create failure requested')\n\n        # Do the thing\n        # OriginalCode\n        message = event['ResourceProperties']['Message']\n\n        # MINE\n        REDIS_HOST = os.environ.get('REDIS_HOST')\n        REDIS_PORT = os.environ.get('REDIS_PORT')\n        BUCKET_NAME = os.environ.get('BUCKET_NAME', 6379)\n        RECORD_COUNT = os.environ.get('RECORD_COUNT', 200)\n\n        if not REDIS_HOST or not BUCKET_NAME:\n            log.info(\n                f'Either REDIS_HOST:{REDIS_HOST} or BUCKET_NAME:{BUCKET_NAME} is none')\n            return cfnresponse.send(event, context, cfnresponse.FAILED, {}, physical_id)\n\n        r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n        log.info(f'All Went fine')\n        # Load data into S3 & Redis\n        s3 = boto3.resource('s3')\n        i = 0\n        \"\"\"\n        while i < int(RECORD_COUNT):\n            print(f\"here:{i}\")\n            # PUT data in S3\n            random_str = str(uuid.uuid1())\n            object = s3.Object(BUCKET_NAME, f'akane-{random_str}.txt')\n            object.put(\n                Body=f'This is some generated data for akane-{random_str}.txt')\n            # Cache the data [ KEY = bucket:filenameX.txt]\n            r.set(f'{BUCKET_NAME}:akane-{random_str}.txt',\n                  f'This is some generated data for akane-{random_str}.txt')\n            log.info(f'Successfully Loaded Item:{i}')\n            i += 1\n        \"\"\"\n        while i < RECORD_COUNT:\n            # Generate Random String for file content\n        random_str = random_str_generator(random.randrange(40, 200))\n        # PUT data in S3\n        object = s3.Object(BUCKET_NAME, 'filename' + str(i) + '.txt')\n        object.put(\n            Body=\"This is some generated data for filename\" + str(irandom_str) + '.txt')\n        # Cache the data [ KEY = bucket:filenameX.txt]\n        r.set(BUCKET_NAME + ':filename' + str(i) + '.txt',\n              'This is some generated data for filename' + str(random_str) + '.txt')\n        i += 1\n        print(\"Data loaded successfully!\")\n        # MINE\n\n        attributes = {\n            'Response': f\"Message sent from function. MessageReceived:{message}\"\n        }\n\n        cfnresponse.send(event, context, cfnresponse.SUCCESS,\n                         attributes, physical_id)\n    except Exception as e:\n        log.exception(e)\n        # cfnresponse's error message is always \"see CloudWatch\"\n        cfnresponse.send(event, context, cfnresponse.FAILED, {}, physical_id)\n"
+        },
+        "Handler": "index.lambda_handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "SingletonLambdamystique304ee111e89c2dfa7ae01bbebcServiceRole7E8318BA",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.7",
+        "Environment": {
+          "Variables": {
+            "LD_LIBRARY_PATH": "/opt/python",
+            "REDIS_HOST": {
+              "Fn::GetAtt": [
+                "redisCluster",
+                "RedisEndpoint.Address"
+              ]
+            },
+            "REDIS_PORT": "6379",
+            "BUCKET_NAME": {
+              "Ref": "appDataBkt3B1B2198"
+            },
+            "RECORD_COUNT": "10"
+          }
+        },
+        "Layers": [
+          {
+            "Ref": "ingestDataredisPythonLibLayerE9A6D6E3"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Mystique"
+          },
+          {
+            "Key": "OwnerProfile",
+            "Value": "https://github.com/miztiik"
+          },
+          {
+            "Key": "GithubRepo",
+            "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+          },
+          {
+            "Key": "ToKnowMore",
+            "Value": "https://youtube.com/c/valaxytechnologies"
+          }
+        ],
+        "Timeout": 300,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "redisSecurityGroupF1670DA3",
+                "GroupId"
+              ]
+            }
+          ],
+          "SubnetIds": [
+            {
+              "Fn::ImportValue": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdappSubnet1Subnet34A83ED1397AE3B1"
+            },
+            {
+              "Fn::ImportValue": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdappSubnet2SubnetA6B3F000A8BBF71E"
+            }
+          ]
+        }
+      },
+      "DependsOn": [
+        "SingletonLambdamystique304ee111e89c2dfa7ae01bbebcServiceRoleDefaultPolicy7AC098CA",
+        "SingletonLambdamystique304ee111e89c2dfa7ae01bbebcServiceRole7E8318BA"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "elasticache-for-app-performance/SingletonLambdamystique304ee111e89c2dfa7ae01bbebc/Resource"
+      }
+    }
+  },
+  "Parameters": {
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+    },
+    "AssetParametersec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264S3BucketD65BFB2B": {
+      "Type": "String",
+      "Description": "S3 bucket for asset \"ec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264\""
+    },
+    "AssetParametersec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264S3VersionKey42C69406": {
+      "Type": "String",
+      "Description": "S3 key for asset version \"ec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264\""
+    },
+    "AssetParametersec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264ArtifactHashE1D0CB5C": {
+      "Type": "String",
+      "Description": "Artifact hash for asset \"ec436cc90dfa8eb21019629a0951c1984160f3b250c07311e956be498959c264\""
+    }
+  },
+  "Outputs": {
+    "SecuirtyAutomationFrom": {
+      "Description": "To know more about this automation stack, check out our github page.",
+      "Value": "https://github.com/miztiik/elasticache-for-app-performance"
+    },
+    "ApplicationClient": {
+      "Description": "The instance to be used as app client for testing performance",
+      "Value": {
+        "Ref": "webAppClient35496D83"
+      }
+    },
+    "MonitoredS3Bucket": {
+      "Description": "S3 Bucket to host application data",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://console.aws.amazon.com/s3/buckets/",
+            {
+              "Ref": "appDataBkt3B1B2198"
+            }
+          ]
+        ]
+      }
+    },
+    "redisSg": {
+      "Description": "The ElastiCache Cluster Security Group Id",
+      "Value": {
+        "Fn::GetAtt": [
+          "redisSecurityGroupF1670DA3",
+          "GroupId"
+        ]
+      },
+      "Export": {
+        "Name": "redisSg"
+      }
+    },
+    "redisClusterEndpoint": {
+      "Description": "The endpoint of the ElastiCache Cluster",
+      "Value": {
+        "Fn::GetAtt": [
+          "redisCluster",
+          "RedisEndpoint.Address"
+        ]
+      }
+    },
+    "redisClusterPort": {
+      "Description": "The port of the ElastiCache Cluster",
+      "Value": {
+        "Fn::GetAtt": [
+          "redisCluster",
+          "RedisEndpoint.Port"
+        ]
+      }
+    },
+    "RedisDataIngesterResponse": {
+      "Description": "Redis Data Ingester Response from Lambda",
+      "Value": {
+        "Fn::GetAtt": [
+          "ingestDataB903D79F",
+          "Response"
+        ]
+      }
+    }
+  }
+}

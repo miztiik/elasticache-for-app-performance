@@ -66,7 +66,7 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
 
     - In the _Outputs_ section of the Clouformation template/service, Make a note of the following paramets, we will use them later
         - `Redis Host` domain name - This cache cluster is pre-loaded with data for querying
-        - `Redis Port`
+        - `Redis Port` - `6379
         - `S3 Bucket Name` - This bucket is pre-loaded with data for querying
         - `EC2 Instance` - This server will be used to connect/query S3 and Redis
     - Connect to the EC2 instance using Session Manager - [Get help here](https://www.youtube.com/watch?v=-ASMtZBrx-k)
@@ -78,7 +78,7 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
         cd helper_scripts
         ```
 
-    - Edit the file `redis_stack_configs.py` with the values from your clouformation outputs.
+    - Edit the file `constants.py` with the values from your clouformation outputs.
     - Fetch data from **Redis**:
 
         ```bash

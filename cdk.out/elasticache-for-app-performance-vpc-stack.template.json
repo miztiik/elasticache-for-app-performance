@@ -828,6 +828,17 @@
         "Name": "elasticache-for-app-performance-vpc-stack:ExportsOutputRefcustomVpcIdpublicSubnet1Subnet60932DA0C7ABB8C2"
       }
     },
+    "ExportsOutputFnGetAttcustomVpcId909241C7CidrBlock188D720F": {
+      "Value": {
+        "Fn::GetAtt": [
+          "customVpcId909241C7",
+          "CidrBlock"
+        ]
+      },
+      "Export": {
+        "Name": "elasticache-for-app-performance-vpc-stack:ExportsOutputFnGetAttcustomVpcId909241C7CidrBlock188D720F"
+      }
+    },
     "ExportsOutputRefcustomVpcIdappSubnet1Subnet34A83ED1397AE3B1": {
       "Value": {
         "Ref": "customVpcIdappSubnet1Subnet34A83ED1"

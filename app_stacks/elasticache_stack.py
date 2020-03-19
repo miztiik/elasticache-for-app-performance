@@ -88,7 +88,7 @@ class ElasticacheForAppPerformanceStack(core.Stack):
         output_1 = core.CfnOutput(self,
                                   "ApplicationClient",
                                   value=web_app_client.instance_id,
-                                  description=f"The instance to be used as app client for testing performance"
+                                  description=f"This instance can be used as app client for testing performance"
                                   )
         output_2 = core.CfnOutput(self,
                                   "MonitoredS3Bucket",
@@ -107,9 +107,9 @@ class ElasticacheForAppPerformanceStack(core.Stack):
                                       allow_all_outbound=True
                                       )
 
-        # Allows Cache Cluster to receive traffic from application
-        redis_sg.add_ingress_rule(_ec2.Peer.any_ipv4(),
-                                  #   _ec2.Port.all_tcp(),
+        # Allows Cache Cluster to receive traffic from the VPC on port 6379
+        redis_sg.add_ingress_rule(_ec2.Peer.ipv4(vpc.vpc_cidr_block),
+                                  # _ec2.Peer.any_ipv4(),
                                   _ec2.Port.tcp(6379),
                                   description="Allow Clients to fetch data from Redis Cache Cluster"
                                   )
@@ -178,9 +178,11 @@ class ElasticacheForAppPerformanceStack(core.Stack):
             ]
         )
 
+        """
         # Publish the custom resource output
         output_6 = core.CfnOutput(
             self, "RedisDataIngesterResponse",
             description="Redis Data Ingester Response from Lambda",
             value=ingest_data_redis.response
         )
+        """

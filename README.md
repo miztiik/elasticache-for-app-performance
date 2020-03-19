@@ -14,8 +14,8 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
 
     - AWS CLI pre-configured - [Get help here](https://youtu.be/TPyyfmQte0U)
     - AWS CDK Installed & Configured - [Get help here](https://www.youtube.com/watch?v=MKwxpszw0Rc)
-    - Python Pre-Installed
-        - _Preferably python3_ `yum install -y python3` or similar for your OS
+    - Python Packages, _Change the below commands to suit your OS_
+        - Python3 - `yum install -y python3`
         - Python Pip - `yum install -y python-pip`
         - Virtualenv - `pip3 install virtualenv`
 
@@ -105,7 +105,8 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
         MIN Latency in Microseconds: 10334
         ```
 
-    - Compare the data retrieval times for both these queries.
+    - Compare the data retrieval times for both these queries. Here is a graph that i made with the data froom the results.
+
     ![miztiik_query_qatency_comparison_for_redis_vs_s3](images/miztiik_query_qatency_comparison_for_redis_vs_s3.png)
 
     You will notice that the queries against ElastiCache Redis were significantly quicker than the queries against S3.
@@ -116,7 +117,7 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
 
     - Resources created during [deployment](#🚀-resource-deployment-using-aws-cdk)
     - Delete CloudWatch Lambda LogGroups
-    - _Any other customer resources, you have created for this demo_
+    - _Any other custom resources, you have created for this demo_
 
     ```bash
     # Delete from cdk
@@ -135,6 +136,8 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
 [Buy me](https://paypal.me/valaxy) a coffee ☕, _or_ You can reach out to get more details through [here](https://youtube.com/c/valaxytechnologies/about).
 
 ### 📚 References
+
+1. [Install NPM](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html)
 
 1. [Python Pip Redis](https://pypi.org/project/redis/)
 1. [AWS Blog](https://aws.amazon.com/blogs/storage/turbocharge-amazon-s3-with-amazon-elasticache-for-redis)

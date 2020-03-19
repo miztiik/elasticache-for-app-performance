@@ -232,7 +232,9 @@
         ],
         "SecurityGroupIngress": [
           {
-            "CidrIp": "0.0.0.0/0",
+            "CidrIp": {
+              "Fn::ImportValue": "elasticache-for-app-performance-vpc-stack:ExportsOutputFnGetAttcustomVpcId909241C7CidrBlock188D720F"
+            },
             "Description": "Allow Clients to fetch data from Redis Cache Cluster",
             "FromPort": 6379,
             "IpProtocol": "tcp",
@@ -745,15 +747,6 @@
         "Fn::GetAtt": [
           "redisCluster",
           "RedisEndpoint.Port"
-        ]
-      }
-    },
-    "RedisDataIngesterResponse": {
-      "Description": "Redis Data Ingester Response from Lambda",
-      "Value": {
-        "Fn::GetAtt": [
-          "ingestDataB903D79F",
-          "Response"
         ]
       }
     }

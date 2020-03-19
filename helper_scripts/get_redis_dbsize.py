@@ -2,9 +2,10 @@
 
 import boto3
 import redis
+import constants
 
-REDIS_HOST = redis_stack_configs.REDIS_HOST
-REDIS_PORT = redis_stack_configs.REDIS_PORT
+REDIS_HOST = constants.REDIS_HOST
+REDIS_PORT = constants.REDIS_PORT
 
 if not REDIS_HOST:
     print(f'REDIS_HOST:{REDIS_HOST} is none')

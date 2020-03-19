@@ -3,13 +3,13 @@
 import boto3
 import datetime
 import redis
-import redis_stack_configs
 import random
+import constants
 
-REDIS_HOST = redis_stack_configs.REDIS_HOST
-REDIS_PORT = redis_stack_configs.REDIS_PORT
-BUCKET_NAME = redis_stack_configs.BUCKET_NAME
-RECORD_COUNT = redis_stack_configs.RECORD_COUNT
+REDIS_HOST = constants.REDIS_HOST
+REDIS_PORT = constants.REDIS_PORT
+BUCKET_NAME = constants.BUCKET_NAME
+RECORD_COUNT = constants.RECORD_COUNT
 
 # Create connection to Redis
 r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)

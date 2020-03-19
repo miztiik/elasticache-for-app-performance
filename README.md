@@ -14,6 +14,10 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
 
     - AWS CLI pre-configured - [Get help here](https://youtu.be/TPyyfmQte0U)
     - AWS CDK Installed & Configured - [Get help here](https://www.youtube.com/watch?v=MKwxpszw0Rc)
+    - Python Pre-Installed
+        - _Preferably python3_ `yum install -y python3` or similar for your OS
+        - Python Pip - `yum install -y python-pip`
+        - Virtualenv - `pip3 install virtualenv`
 
 1. ## ⚙️ Setting up the environment
 
@@ -44,6 +48,7 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
 
     # Make sure you in root directory
     cd elasticache-for-app-performance
+    python3 -m venv .env
     source .env/bin/activate
     pip install -r requirements.txt
     ```

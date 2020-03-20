@@ -7,19 +7,19 @@ with open("README.md") as fp:
 
 setuptools.setup(
     name="elasticache_for_app_performance",
-    version="0.0.1",
+    version="1.0.1",
 
     description="Launch app with EC2, Redis, S3, Lambda to Test Redis Performance",
     long_description=long_description,
     long_description_content_type="text/markdown",
 
-    author="author",
+    author="Mystique",
 
     package_dir={"": "app_stacks"},
     packages=setuptools.find_packages(where="app_stacks"),
 
     install_requires=[
-        "aws-cdk.core==1.27.0",
+        "aws-cdk.core==1.30.0",
     ],
 
     python_requires=">=3.6",

@@ -1,10 +1,10 @@
 # Use ElastiCache to improve Application Performance
 
-Many applications use S3 as the backend for storing data like images, videos, files etc., As your user base grows and you start reaching millions of requests to these objects, Latency and Costs play an important role in maintaining application performance. Especially if your application requires <5 ms responses. For such applications, customers can complement S3 with an in-memory cache like ElastiCache for Redis. It reduces S3 retrieval costs and improves application performance.
+  Many applications use S3 as the backend for storing data like images, videos, files etc., As your user base grows and you start reaching millions of requests to these objects, Latency and Costs play an important role in maintaining application performance. Especially if your application requires <5 ms responses. For such applications, customers can complement S3 with an in-memory cache like ElastiCache for Redis. It reduces S3 retrieval costs and improves application performance.
 
   ![Miztiik Serverless Video Metadata Extractor](images/miztiik_elasticache-for-app-performance_architecture.png)
 
-Here, let me show, how you can set up an in-memory cache using ElastiCache for Redis, along with best practices to be used with S3. You can also test the performance benefits of incorporating a cache for S3. All the necessary code is written in Cloudformation using CDK.
+  Here, let me show, how you can set up an in-memory cache using ElastiCache for Redis, along with best practices to be used with S3. You can also test the performance benefits of incorporating a cache for S3. All the necessary code is written in Cloudformation using CDK.
 
   Follow this article in **[Youtube](https://www.youtube.com/c/ValaxyTechnologies)**
 
@@ -39,8 +39,6 @@ Here, let me show, how you can set up an in-memory cache using ElastiCache for R
     - EC2 Instance in public subnet: We will use this instances to simulate a application client querying _S3_ or _AWS ElastiCache_
 
     **Note**: _Most of the resources should be covered under the aws free tier, except the NAT Gateway. You can swap it out for a NAT Instance_
-
-    If you have AWS CDK installed you can close this repository and deploy the stack with,
 
     ```bash
     # If you DONT have cdk installed

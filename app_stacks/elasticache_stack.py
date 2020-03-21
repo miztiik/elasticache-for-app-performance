@@ -15,6 +15,7 @@ class global_args:
     ENVIRONMENT = "production"
     REPO_NAME = 'elasticache-for-app-performance'
     SOURCE_INFO = f'https://github.com/miztiik/{REPO_NAME}'
+    VERSION = '2020_03_20'
 
 
 class ElasticacheForAppPerformanceStack(core.Stack):
@@ -80,7 +81,7 @@ class ElasticacheForAppPerformanceStack(core.Stack):
                                   removal_policy=core.RemovalPolicy.DESTROY)
 
         output_0 = core.CfnOutput(self,
-                                  "SecuirtyAutomationFrom",
+                                  "AutomationFrom",
                                   value=f"{global_args.SOURCE_INFO}",
                                   description="To know more about this automation stack, check out our github page."
                                   )
